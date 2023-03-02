@@ -5,7 +5,10 @@ import android.content.Intent
 import com.hhh.voiceappvk.MainActivity
 import com.vk.api.sdk.VK
 import com.vk.api.sdk.VKTokenExpiredHandler
+import dagger.hilt.android.HiltAndroidApp
 
+
+@HiltAndroidApp
 class App: Application() {
 
     override fun onCreate() {

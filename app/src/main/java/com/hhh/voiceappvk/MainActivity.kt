@@ -1,15 +1,31 @@
 package com.hhh.voiceappvk
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.vk.api.sdk.VK
+import com.vk.api.sdk.VKApiCallback
 import com.vk.api.sdk.auth.VKAccessToken
 import com.vk.api.sdk.auth.VKAuthCallback
 import com.vk.api.sdk.auth.VKScope
+import com.vk.api.sdk.requests.VKRequest
+import com.vk.sdk.api.docs.DocsService
+import com.vk.sdk.api.docs.dto.DocsGetResponse
+import com.vk.sdk.api.docs.dto.TypeParam
+import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.schedulers.Schedulers
 
+
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    private var dispose: Disposable? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -21,6 +37,17 @@ class MainActivity : AppCompatActivity() {
         val callback = object: VKAuthCallback {
             override fun onLogin(token: VKAccessToken) {
                 Toast.makeText(this@MainActivity, "DONE", Toast.LENGTH_SHORT).show()
+
+                dispose = Observable.fromCallable {
+                    VK.executeSync(DocsService().docsGet(type = TypeParam.AUDIO, ownerId = VK.getUserId()))
+                }
+                    .subscribeOn(Schedulers.single())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        Log.d("Docs result", "${it.count}: ${it.items}")
+                    }, {
+                        Log.e("Docs result", it.localizedMessage.toString())
+                    })
             }
 
             override fun onLoginFailed(errorCode: Int) {
@@ -30,5 +57,10 @@ class MainActivity : AppCompatActivity() {
         if (data == null || !VK.onActivityResult(requestCode, resultCode, data, callback)) {
             super.onActivityResult(requestCode, resultCode, data)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        dispose?.dispose()
     }
 }
