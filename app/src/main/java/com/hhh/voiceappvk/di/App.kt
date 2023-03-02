@@ -1,4 +1,4 @@
-package com.hhh.voiceappvk.app
+package com.hhh.voiceappvk.di
 
 import android.app.Application
 import android.content.Intent

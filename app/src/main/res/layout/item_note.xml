@@ -2,6 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="15dp"
+    android:layout_margin="8dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -18,30 +19,30 @@
             android:paddingStart="12dp"
             android:paddingTop="12dp"
             android:paddingBottom="12dp"
-            app:layout_constraintEnd_toStartOf="@+id/ticking_item_voice"
+            app:layout_constraintEnd_toStartOf="@+id/tickingItemVoice"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:id="@+id/title_item_voice"
+                android:id="@+id/titleItemVoice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="bold"/>
 
             <TextView
-                android:id="@+id/datetime_item_voice"
+                android:id="@+id/datetimeItemVoice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
-                app:layout_constraintTop_toBottomOf="@id/title_item_voice"
+                android:textSize="12sp"
+                app:layout_constraintTop_toBottomOf="@id/titleItemVoice"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
         </LinearLayout>
 
         <ImageSwitcher
-            android:id="@+id/switcher_play_stop"
+            android:id="@+id/switcherPlayStop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
@@ -55,29 +56,29 @@
                 android:src="@drawable/ic_play"/>
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:src="@drawable/ic_stop"/>
 
         </ImageSwitcher>
 
         <TextView
-            android:id="@+id/duration_item_voice"
+            android:id="@+id/durationItemVoice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:layout_marginEnd="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/switcher_play_stop"
+            app:layout_constraintEnd_toStartOf="@+id/switcherPlayStop"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/ticking_item_voice"
+            android:id="@+id/tickingItemVoice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/duration_item_voice"
+            app:layout_constraintEnd_toStartOf="@+id/durationItemVoice"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

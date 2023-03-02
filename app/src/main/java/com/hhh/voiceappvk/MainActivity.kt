@@ -38,16 +38,7 @@ class MainActivity : AppCompatActivity() {
             override fun onLogin(token: VKAccessToken) {
                 Toast.makeText(this@MainActivity, "DONE", Toast.LENGTH_SHORT).show()
 
-                dispose = Observable.fromCallable {
-                    VK.executeSync(DocsService().docsGet(type = TypeParam.AUDIO, ownerId = VK.getUserId()))
-                }
-                    .subscribeOn(Schedulers.single())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
-                        Log.d("Docs result", "${it.count}: ${it.items}")
-                    }, {
-                        Log.e("Docs result", it.localizedMessage.toString())
-                    })
+
             }
 
             override fun onLoginFailed(errorCode: Int) {
