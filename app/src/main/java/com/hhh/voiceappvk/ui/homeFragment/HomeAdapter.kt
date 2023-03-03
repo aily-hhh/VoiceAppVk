@@ -67,11 +67,23 @@ class HomeAdapter: RecyclerView.Adapter<HomeAdapter.HomeViewHolder>() {
         holder.titleItemVoice.text = currentItem.title
         holder.datetimeItemVoice.text = currentItem.date.toString()
 
+        holder.itemView.apply {
+            setOnClickListener {
+                clickListener!!.onItemClickListener(currentItem)
+            }
+            setOnLongClickListener {
+                clickListener!!.onItemLongClickListener(currentItem, holder.itemView)
+                false
+            }
+        }
     }
-
-
 
     override fun getItemCount(): Int {
         return differ.currentList.size
+    }
+
+    private var clickListener: ItemClickListener? = null
+    fun setClickListener(clickListener: ItemClickListener) {
+        this.clickListener = clickListener
     }
 }

@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +17,7 @@ import com.hhh.voiceappvk.databinding.FragmentHomeBinding
 import com.hhh.voiceappvk.util.UiState
 import com.vk.api.sdk.VK
 import com.vk.sdk.api.docs.DocsService
+import com.vk.sdk.api.docs.dto.DocsDoc
 import com.vk.sdk.api.docs.dto.TypeParam
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -32,6 +34,7 @@ class HomeFragment : Fragment() {
 
     private var recyclerView: RecyclerView? = null
     private var startRecordFab: FloatingActionButton? = null
+    private var homeProgressBar: ProgressBar? = null
     private var homeAdapter: HomeAdapter? = null
 
     private val viewModelHome by viewModels<HomeViewModel>()
@@ -49,21 +52,32 @@ class HomeFragment : Fragment() {
 
         recyclerView = mBinding.recyclerView
         startRecordFab = mBinding.startRecordFab
+        homeProgressBar = mBinding.homeProgressBar
         initAdapter()
+        homeAdapter?.setClickListener(clickListener = object: ItemClickListener {
+            override fun onItemClickListener(doc: DocsDoc) {
+                Log.d("checkData", doc.toString())
+            }
+
+            override fun onItemLongClickListener(doc: DocsDoc, view: View) {
+                Log.d("checkData", doc.toString())
+            }
+        })
 
         viewModelHome.getFiles.observe(viewLifecycleOwner) {
             when (it) {
                 is UiState.Loading -> {
-
+                    homeProgressBar?.visibility = View.VISIBLE
                 }
                 is UiState.Success -> {
+                    homeProgressBar?.visibility = View.INVISIBLE
                     homeAdapter?.setDiffer(it.data!!)
                 }
                 is UiState.Error -> {
-
+                    homeProgressBar?.visibility = View.INVISIBLE
                 }
                 else -> {
-
+                    homeProgressBar?.visibility = View.INVISIBLE
                 }
             }
         }

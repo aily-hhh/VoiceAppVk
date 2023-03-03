@@ -24,21 +24,19 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private var dispose: Disposable? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        VK.login(this, arrayListOf(VKScope.DOCS))
+        if (!VK.isLoggedIn()) {
+            VK.login(this, arrayListOf(VKScope.DOCS))
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         val callback = object: VKAuthCallback {
             override fun onLogin(token: VKAccessToken) {
                 Toast.makeText(this@MainActivity, "DONE", Toast.LENGTH_SHORT).show()
-
-
             }
 
             override fun onLoginFailed(errorCode: Int) {
@@ -48,10 +46,5 @@ class MainActivity : AppCompatActivity() {
         if (data == null || !VK.onActivityResult(requestCode, resultCode, data, callback)) {
             super.onActivityResult(requestCode, resultCode, data)
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        dispose?.dispose()
     }
 }
