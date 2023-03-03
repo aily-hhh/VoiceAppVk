@@ -50,6 +50,31 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <ImageView
+        android:id="@+id/cancelRecordFab"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:elevation="48dp"
+        android:src="@drawable/ic_cancel"
+        android:visibility="gone"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/startRecordFab" />
+
+    <Chronometer
+        android:id="@+id/tickingRecord"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_for_element"
+        android:padding="8dp"
+        android:elevation="48dp"
+        android:visibility="gone"
+        android:layout_marginBottom="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/startRecordFab"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <ProgressBar
         android:id="@+id/homeProgressBar"
         android:layout_width="wrap_content"
