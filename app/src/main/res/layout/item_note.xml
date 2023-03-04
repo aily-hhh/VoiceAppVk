@@ -73,7 +73,7 @@
             app:layout_constraintEnd_toStartOf="@+id/framePlayStop"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <Chronometer
             android:id="@+id/tickingItemVoice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -49,6 +49,12 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
+    // Room
+    def roomVersion = "2.5.0"
+    implementation "androidx.room:room-runtime:$roomVersion"
+    implementation "androidx.room:room-ktx:$roomVersion"
+    kapt "androidx.room:room-compiler:$roomVersion"
+
     //VK
     implementation 'com.vk:android-sdk-core:3.0.0'
     implementation 'com.vk:android-sdk-api:3.0.0'
@@ -56,6 +62,11 @@ dependencies {
     // RxJava
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.2'
     implementation 'io.reactivex.rxjava3:rxjava:3.1.6'
+
+    // Coroutines
+    def coroutinesVersion = "1.6.4"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
 
     // Hilt
     def hiltVersion = '2.45'
@@ -74,4 +85,16 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment:$navVersion"
     implementation "androidx.navigation:navigation-ui-ktx:$navVersion"
     implementation "androidx.navigation:navigation-ui:$navVersion"
+
+    // Retrofit
+    def retrofitVersion = "2.9.0"
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+
+    // OkHTTP
+    def okhttpVersion = "4.9.0"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
+
+    // Kotlinx
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
 }

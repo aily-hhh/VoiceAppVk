@@ -10,19 +10,39 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.hhh.voiceappvk.R
-import com.hhh.voiceappvk.util.audiorecorder.playback.AudioPlayer
 import com.hhh.voiceappvk.util.audiorecorder.record.AudioRecorder
-import com.hhh.voiceappvk.data.HomeViewModel
+import com.hhh.voiceappvk.data.home.HomeViewModel
+import com.hhh.voiceappvk.data.room.model.AudioNote
+import com.hhh.voiceappvk.data.room.viewmodel.RoomViewModel
+import com.hhh.voiceappvk.data.vk.VkModel
 import com.hhh.voiceappvk.databinding.FragmentHomeBinding
+import com.hhh.voiceappvk.ui.EditNoteFragment
 import com.hhh.voiceappvk.util.UiState
+import com.vk.api.sdk.VK
+import com.vk.sdk.api.docs.DocsService
 import com.vk.sdk.api.docs.dto.DocsDoc
+import com.vk.sdk.api.docs.dto.TypeParam
 import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.disposables.DisposableContainer
+import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
+import okhttp3.MultipartBody
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.internal.http.promisesBody
 import java.io.File
 
 
@@ -34,12 +54,12 @@ class HomeFragment : Fragment() {
 
     private var recyclerView: RecyclerView? = null
     private var startRecordFab: FloatingActionButton? = null
-    private var homeProgressBar: ProgressBar? = null
     private var cancelRecordFab: ImageView? = null
     private var tickingRecord: Chronometer? = null
     private var homeAdapter: HomeAdapter? = null
 
     private val viewModelHome by viewModels<HomeViewModel>()
+    private val viewModelRoom by viewModels<RoomViewModel>()
 
     private val recorder by lazy {
         AudioRecorder(requireActivity().applicationContext)
@@ -75,12 +95,14 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         recyclerView = mBinding.recyclerView
-        homeProgressBar = mBinding.homeProgressBar
 
         initAdapter()
         homeAdapter?.setClickListener(clickListener = object: ItemClickListener {
-            override fun onItemLongClickListener(doc: DocsDoc, view: View) {
-                Log.d("checkData", "long click $doc")
+            override fun onItemLongClickListener(note: AudioNote, view: View) {
+                val bundle = Bundle()
+                bundle.putParcelable("note", note)
+                Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+                    .navigate(R.id.action_homeFragment_to_editNoteFragment, bundle)
             }
         })
 
@@ -90,6 +112,8 @@ class HomeFragment : Fragment() {
                 startRecord()
             } else {
                 stopRecord()
+                Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+                    .navigate(R.id.action_homeFragment_to_editNoteFragment)
             }
         }
 
@@ -99,8 +123,12 @@ class HomeFragment : Fragment() {
             File(requireActivity().cacheDir, "my_file_audioVK").delete()
         }
 
-        observeViewModel()
-        viewModelHome.getFiles()
+        viewModelRoom.allAudioNotes.observe(viewLifecycleOwner) {
+            homeAdapter?.setDiffer(it)
+        }
+
+//        observeViewModel()
+//        viewModelHome.getFiles()
     }
 
     private fun initAdapter() {
@@ -111,25 +139,25 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun observeViewModel() {
-        viewModelHome.getFiles.observe(viewLifecycleOwner) {
-            when (it) {
-                is UiState.Loading -> {
-                    homeProgressBar?.visibility = View.VISIBLE
-                }
-                is UiState.Success -> {
-                    homeProgressBar?.visibility = View.INVISIBLE
-                    homeAdapter?.setDiffer(it.data!!)
-                }
-                is UiState.Error -> {
-                    homeProgressBar?.visibility = View.INVISIBLE
-                }
-                else -> {
-                    homeProgressBar?.visibility = View.INVISIBLE
-                }
-            }
-        }
-    }
+//    private fun observeViewModel() {
+//        viewModelHome.getFiles.observe(viewLifecycleOwner) {
+//            when (it) {
+//                is UiState.Loading -> {
+//                    homeProgressBar?.visibility = View.VISIBLE
+//                }
+//                is UiState.Success -> {
+//                    homeProgressBar?.visibility = View.INVISIBLE
+//                    homeAdapter?.setDiffer(it.data!!)
+//                }
+//                is UiState.Error -> {
+//                    homeProgressBar?.visibility = View.INVISIBLE
+//                }
+//                else -> {
+//                    homeProgressBar?.visibility = View.INVISIBLE
+//                }
+//            }
+//        }
+//    }
 
     private fun startRecord() {
         tickingRecord = mBinding.tickingRecord

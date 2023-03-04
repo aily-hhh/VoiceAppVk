@@ -1,6 +1,7 @@
-package com.hhh.voiceappvk.data
+package com.hhh.voiceappvk.data.home
 
 import android.util.Log
+import com.hhh.voiceappvk.data.home.HomeDao
 import com.hhh.voiceappvk.util.UiState
 import com.vk.api.sdk.VK
 import com.vk.sdk.api.docs.DocsService

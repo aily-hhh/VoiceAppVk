@@ -1,8 +1,9 @@
-package com.hhh.voiceappvk.data
+package com.hhh.voiceappvk.data.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.hhh.voiceappvk.data.home.HomeRepository
 import com.hhh.voiceappvk.util.UiState
 import com.vk.sdk.api.docs.dto.DocsDoc
 import dagger.hilt.android.lifecycle.HiltViewModel

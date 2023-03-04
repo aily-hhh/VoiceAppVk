@@ -3,6 +3,7 @@ package com.hhh.voiceappvk.util.audiorecorder.record
 import android.content.Context
 import android.media.MediaRecorder
 import android.os.Build
+import android.util.Log
 import java.io.File
 import java.io.FileOutputStream
 
@@ -32,8 +33,13 @@ class AudioRecorder(private val context: Context): AudioRecord {
     }
 
     override fun stop() {
-        recorder?.stop()
-        recorder?.reset()
-        recorder = null
+        try {
+            recorder?.stop()
+        } catch (e: Exception) {
+            Log.e("Error", "audio recorder: ${e.localizedMessage}")
+        } finally {
+            recorder?.reset()
+            recorder = null
+        }
     }
 }

@@ -1,4 +1,4 @@
-package com.hhh.voiceappvk.data
+package com.hhh.voiceappvk.data.home
 
 import com.hhh.voiceappvk.util.UiState
 import com.vk.sdk.api.docs.dto.DocsDoc
