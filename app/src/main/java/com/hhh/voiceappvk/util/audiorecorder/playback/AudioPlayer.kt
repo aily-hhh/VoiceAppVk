@@ -31,31 +31,15 @@ class AudioPlayer(): AudioPlay {
         }
     }
 
-    override fun playFile(file: File) {
-        MediaPlayer().apply {
-            player = this
-            setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .setUsage(AudioAttributes.USAGE_MEDIA)
-                    .build()
-            )
-            setDataSource(file.toUri().path)
-            prepareAsync()
-            setOnPreparedListener {
-                start()
-                setOnCompletionListener {
-                    stop()
-                }
-            }
-        }
-    }
-
     override fun stop() {
         if (player?.isPlaying == true) {
             player?.stop()
         }
         player?.release()
         player = null
+    }
+
+    fun isPlaying(): Boolean? {
+        return player?.isPlaying
     }
 }

@@ -13,7 +13,7 @@ data class AudioNote(
     @ColumnInfo("dateTime")
     val dateTime: Long,
     @ColumnInfo("duration")
-    val duration: Long,
+    val duration: String,
     @ColumnInfo("filePath")
     val filePath: String,
     @ColumnInfo("title")
@@ -22,7 +22,7 @@ data class AudioNote(
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
         parcel.readLong(),
-        parcel.readLong(),
+        parcel.readString().toString(),
         parcel.readString().toString(),
         parcel.readString().toString()
     ) {
@@ -31,7 +31,7 @@ data class AudioNote(
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(id)
         parcel.writeLong(dateTime)
-        parcel.writeLong(duration)
+        parcel.writeString(duration)
         parcel.writeString(filePath)
         parcel.writeString(title)
     }

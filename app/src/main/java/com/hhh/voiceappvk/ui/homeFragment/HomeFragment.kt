@@ -3,14 +3,12 @@ package com.hhh.voiceappvk.ui.homeFragment
 import android.Manifest
 import android.os.Bundle
 import android.os.SystemClock
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,30 +17,11 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.hhh.voiceappvk.R
 import com.hhh.voiceappvk.util.audiorecorder.record.AudioRecorder
-import com.hhh.voiceappvk.data.home.HomeViewModel
 import com.hhh.voiceappvk.data.room.model.AudioNote
 import com.hhh.voiceappvk.data.room.viewmodel.RoomViewModel
-import com.hhh.voiceappvk.data.vk.VkModel
 import com.hhh.voiceappvk.databinding.FragmentHomeBinding
-import com.hhh.voiceappvk.ui.EditNoteFragment
-import com.hhh.voiceappvk.util.UiState
 import com.vk.api.sdk.VK
-import com.vk.sdk.api.docs.DocsService
-import com.vk.sdk.api.docs.dto.DocsDoc
-import com.vk.sdk.api.docs.dto.TypeParam
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.disposables.Disposable
-import io.reactivex.rxjava3.disposables.DisposableContainer
-import io.reactivex.rxjava3.schedulers.Schedulers
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import okhttp3.MultipartBody
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.internal.http.promisesBody
 import java.io.File
 
 
@@ -58,7 +37,6 @@ class HomeFragment : Fragment() {
     private var tickingRecord: Chronometer? = null
     private var homeAdapter: HomeAdapter? = null
 
-    private val viewModelHome by viewModels<HomeViewModel>()
     private val viewModelRoom by viewModels<RoomViewModel>()
 
     private val recorder by lazy {
@@ -66,9 +44,11 @@ class HomeFragment : Fragment() {
     }
     private var audioFile: File? = null
     private var flag = true
+    private var duration: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         val permissionLauncher = registerForActivityResult(
             ActivityResultContracts.RequestPermission()
         ) { isGranted ->
@@ -94,6 +74,11 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if (!VK.isLoggedIn()) {
+            Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+                .navigate(R.id.action_homeFragment_to_loginFragment)
+        }
+
         recyclerView = mBinding.recyclerView
 
         initAdapter()
@@ -112,8 +97,10 @@ class HomeFragment : Fragment() {
                 startRecord()
             } else {
                 stopRecord()
+                val bundle = Bundle()
+                bundle.putString("duration", duration)
                 Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
-                    .navigate(R.id.action_homeFragment_to_editNoteFragment)
+                    .navigate(R.id.action_homeFragment_to_editNoteFragment, bundle)
             }
         }
 
@@ -126,9 +113,6 @@ class HomeFragment : Fragment() {
         viewModelRoom.allAudioNotes.observe(viewLifecycleOwner) {
             homeAdapter?.setDiffer(it)
         }
-
-//        observeViewModel()
-//        viewModelHome.getFiles()
     }
 
     private fun initAdapter() {
@@ -138,26 +122,6 @@ class HomeFragment : Fragment() {
             layoutManager = StaggeredGridLayoutManager(1, LinearLayoutManager.VERTICAL)
         }
     }
-
-//    private fun observeViewModel() {
-//        viewModelHome.getFiles.observe(viewLifecycleOwner) {
-//            when (it) {
-//                is UiState.Loading -> {
-//                    homeProgressBar?.visibility = View.VISIBLE
-//                }
-//                is UiState.Success -> {
-//                    homeProgressBar?.visibility = View.INVISIBLE
-//                    homeAdapter?.setDiffer(it.data!!)
-//                }
-//                is UiState.Error -> {
-//                    homeProgressBar?.visibility = View.INVISIBLE
-//                }
-//                else -> {
-//                    homeProgressBar?.visibility = View.INVISIBLE
-//                }
-//            }
-//        }
-//    }
 
     private fun startRecord() {
         tickingRecord = mBinding.tickingRecord
@@ -175,6 +139,7 @@ class HomeFragment : Fragment() {
 
     private fun stopRecord() {
         flag = true
+        duration = tickingRecord?.text.toString()
         tickingRecord?.stop()
         recorder.stop()
         tickingRecord?.visibility = View.GONE

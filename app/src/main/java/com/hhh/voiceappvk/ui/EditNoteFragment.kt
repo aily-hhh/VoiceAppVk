@@ -32,6 +32,7 @@ class EditNoteFragment : BottomSheetDialogFragment() {
     private val viewModelRoom by viewModels<RoomViewModel>()
     private val bundleArgs by navArgs<EditNoteFragmentArgs>()
     private var currentNote: AudioNote? = null
+    private var duration: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,6 +46,7 @@ class EditNoteFragment : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         currentNote = bundleArgs.note
+        duration = bundleArgs.duration
         editNoteText = mBinding.editNoteText
 
         currentNameNote = mBinding.currentNameNote
@@ -80,7 +82,7 @@ class EditNoteFragment : BottomSheetDialogFragment() {
 
                 viewModelRoom.insertAudioNote(note = AudioNote(
                     dateTime = dateTime,
-                    duration = 0,
+                    duration = duration ?: "",
                     filePath = file.path,
                     title = currentTitle
                 ))

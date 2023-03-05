@@ -8,5 +8,7 @@
     <string name="save">Сохранить</string>
     <string name="name">Название</string>
     <string name="new_note">Новая заметка</string>
+    <string name="signIn">Войти</string>
+    <string name="warning">Выключите проигрывание предыдущей заметки!</string>
     <integer name="com_vk_sdk_AppId">51569579</integer>
 </resources>

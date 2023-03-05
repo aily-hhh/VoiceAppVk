@@ -3,7 +3,6 @@ package com.hhh.voiceappvk.data.room.dao
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.hhh.voiceappvk.data.room.model.AudioNote
-import com.hhh.voiceappvk.util.UiState
 
 @Dao
 interface RoomDao {
